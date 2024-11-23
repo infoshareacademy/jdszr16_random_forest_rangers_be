@@ -28,4 +28,4 @@ def test_data(user: User):
     else:
         reversed_name = user.username  # Jeśli brak nazwiska, zwróć bez zmian
 
-    return {"message": "Odpowiedz z Backend" + reversed_name}
+    return {"message": "Odpowiedz z Backend " + reversed_name}
