@@ -15,11 +15,17 @@ app.add_middleware(
     allow_headers=["*"],  # Pozwala na wszystkie nagłówki
 )
 
+# Model danych
+class User(BaseModel):
+    username: str
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.post('/test')
+def test_data(user: User):
+    # Rozdzielenie na imię i nazwisko
+    parts = user.username.split()
+    if len(parts) == 2:  # Sprawdzamy, czy jest dokładnie imię i nazwisko
+        reversed_name = f"{parts[1]} {parts[0]}"  # Zamiana kolejności
+    else:
+        reversed_name = user.username  # Jeśli brak nazwiska, zwróć bez zmian
 
-@app.get('/test')
-def test_data():
-    return {"value": 'This is just response from Back End'}
+    return {"message": "Odpowiedz z Backend" + reversed_name}
