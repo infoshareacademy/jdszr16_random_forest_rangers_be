@@ -1,10 +1,15 @@
-from flask import Flask
-app = Flask(__name__)
+from typing import Union
 
-@app.route('/')
-def backend_ml():
-    return 'Backend dla ML!'
+from fastapi import FastAPI
 
-@app.route('/rangers')
-def hello_rangers():
-    return 'Hello Rangers!'
+app = FastAPI()
+
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: Union[str, None] = None):
+    return {"item_id": item_id, "q": q}
