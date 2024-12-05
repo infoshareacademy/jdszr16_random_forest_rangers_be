@@ -1,3 +1,6 @@
 uvicorn
 gunicorn
+openai
+requests
+python-dotenv
 fastapi[standard]

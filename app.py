@@ -1,10 +1,17 @@
 from typing import Union
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from api_calls.get_illness_info import get_illness_info
+from dotenv import load_dotenv
 
+import os
+
+
+load_dotenv()
 app = FastAPI()
+
 
 # Konfiguracja CORS
 app.add_middleware(
@@ -16,16 +23,26 @@ app.add_middleware(
 )
 
 # Model danych
-class User(BaseModel):
-    username: str
+# class Choroba(BaseModel):
+#     choroba_name: str
 
-@app.post('/test')
-def test_data(user: User):
-    # Rozdzielenie na imię i nazwisko
-    parts = user.username.split()
-    if len(parts) == 2:  # Sprawdzamy, czy jest dokładnie imię i nazwisko
-        reversed_name = f"{parts[1]} {parts[0]}"  # Zamiana kolejności
-    else:
-        reversed_name = user.username  # Jeśli brak nazwiska, zwróć bez zmian
+class P(BaseModel):
+    difficulty: str
+    length:  str
 
-    return {"message": "Odpowiedz z Backend " + reversed_name}
+
+@app.get('/')
+def test():
+    return {"message": "Odpowiedz z Backend"}
+
+
+@app.get('/illness_more_info')
+def illness_info(difficulty: int, length: int, subject: str):
+
+    print(difficulty, length, subject)
+
+
+    return get_illness_info(difficulty, length, subject)
+
+
+
