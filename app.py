@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from api_calls.get_illness_info import get_illness_info
+from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
 from dotenv import load_dotenv
 
 import os
@@ -37,12 +38,12 @@ def test():
 
 
 @app.get('/illness_more_info')
-def illness_info(difficulty: int, length: int, subject: str):
+def illness_info(is_doctor: bool, length: int, disease: str):
+    return get_illness_info(is_doctor, length, disease)
 
-    print(difficulty, length, subject)
-
-
-    return get_illness_info(difficulty, length, subject)
+@app.get('/illness_treatment_plan')
+def illness_treatment_plan(disease: str):
+    return get_illness_treatment_plan(disease)
 
 
 

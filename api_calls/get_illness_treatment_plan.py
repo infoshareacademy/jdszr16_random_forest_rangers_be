@@ -5,20 +5,8 @@ api_key = os.getenv("OPENAI_API_KEY")
 api_org = os.getenv("OPENAI_API_ORG")
 
 
-def get_illness_info(is_doctor = False, length = 10, disease = "cukrzyca"):
+def get_illness_treatment_plan(disease = "cukrzyca"):
     openai.api_key = api_key
-
-    # print(isDoctor, length, disease)
-    taskContent = ''
-
-    if is_doctor:
-        taskContent = f"Jestes lekarzem. Profesorem medycyny i farmaceuta. Znasz nazwy lekow po lacine. W swoich tekstach podajesz nazwy nazwy chorob po lacinie. Piszesz teksty dla lekarzy w bardzo skomplikowany sposob"
-    else:
-        taskContent = f"Nie jestes lekarzem. Piszesz bardzo proste teksty dla osob bez znajomosci medycyny."
-
-    print(taskContent)
-
-
 
     client = openai.OpenAI(api_key=api_key, organization=api_org)
     openAI_response = client.chat.completions.create(
@@ -26,11 +14,11 @@ def get_illness_info(is_doctor = False, length = 10, disease = "cukrzyca"):
         messages=[
             {
                 "role": "system",
-                "content": taskContent
+                "content": "Jestes farmaceutą i lekarzem. Znasz sie na medycynie"
             },
             {
                 "role": "user",
-                "content": f"napisz text o  {disease}. Zmiesc sie w {length} zdaniach.",
+                "content": f"Napisz text o  sposobach leczenia choroby o nazwie {disease}. Tekst powinien byc przystepny dla pacjentow. Zmiesc sie w 20 zdaniach. Nie opisuj choroby, tylko leczenie.",
                 "response_format": {
                     "type": "tekst"
                 }
