@@ -21,7 +21,7 @@ app = FastAPI()
 # Konfiguracja CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Pozwala na żądania ze wszystkich domen. Zmień na listę domen, jeśli chcesz to ograniczyć.
+    allow_origins=["https://jdszr16-random-forest-rangers-fe.onrender.com", "http://localhost:3000", "*"],  # Allow
     allow_credentials=True,
     allow_methods=["*"],  # Pozwala na wszystkie metody (GET, POST, PUT, DELETE itd.)
     allow_headers=["*"],  # Pozwala na wszystkie nagłówki
