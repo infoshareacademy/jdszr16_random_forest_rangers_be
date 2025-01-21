@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import FastAPI, Request, Depends, Body
+from fastapi import FastAPI, Request, Depends, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from api_calls.get_illness_info import get_illness_info
@@ -8,7 +8,11 @@ from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
 from dotenv import load_dotenv
 
 import os
+import pickle
+import numpy as np
 
+with open('./models/model.pkl', 'rb') as file:
+    model = pickle.load(file)
 
 load_dotenv()
 app = FastAPI()
@@ -58,8 +62,31 @@ def illness_treatment_plan(disease: str):
     return get_illness_treatment_plan(disease)
 
 @app.post('/predict')
-def predict(form_data: P):
-    # Debugowanie - logowanie danych wejściowych
-    print(f"Received data: {form_data}")
-    return form_data.dict()  # Konwersja modelu P na słownik i zwrócenie
+def predict(data: P):
+    try:
+        features = np.array([[
+            data.age,
+            data.education,
+            data.sex,
+            data.is_smoking,
+            data.cigsPerDay,
+            data.BPMeds,
+            data.prevalentStroke,
+            data.prevalentHyp,
+            data.diabetes,
+            data.totChol,
+            data.sysBP,
+            data.diaBP,
+            data.bmi,
+            data.heartRate,
+            data.glucose
+        ]])
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Nieprawidłowy format danych: {e}")
+
+        # Przewidywanie
+    prediction = model.predict(features)
+
+    # Zwrócenie wyniku
+    return {"prediction": prediction.tolist()}
 
