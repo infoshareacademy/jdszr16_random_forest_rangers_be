@@ -8,7 +8,7 @@ from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
 from dotenv import load_dotenv
 
 import os
-import pickle
+import pickle5 as pickle
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
