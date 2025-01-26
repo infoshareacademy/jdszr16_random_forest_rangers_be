@@ -10,9 +10,20 @@ from dotenv import load_dotenv
 import os
 import pickle
 import numpy as np
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+# Odczyt z pliku scalera
+with open('./models/scaler_info.pkl', 'rb') as file:
+    scaler_info = pickle.load(file)  # Load the scaler_info dictionary
+scaler = scaler_info['scaler']  # Pobranie skalera z pliku
+scaled_columns = scaler_info['scaled_columns']  # Pobranie listy skalowanych kolumn
+print('scaled_columns', scaled_columns)
 
 with open('./models/model.pkl', 'rb') as file:
     model = pickle.load(file)
+
+# min_max_scaler = MinMaxScaler()
 
 load_dotenv()
 app = FastAPI()
@@ -33,9 +44,8 @@ app.add_middleware(
 
 class P(BaseModel):
     age: int
-    education: int
     sex: int
-    is_smoking: int
+    education: int
     cigsPerDay: int
     BPMeds: int
     prevalentStroke: int
@@ -44,8 +54,7 @@ class P(BaseModel):
     totChol: float
     sysBP: float
     diaBP: float
-    bmi: float
-    heartRate: int
+    BMI: float
     glucose: int
 
 
@@ -64,29 +73,29 @@ def illness_treatment_plan(disease: str):
 @app.post('/predict')
 def predict(data: P):
     try:
-        features = np.array([[
-            data.age,
-            data.education,
-            data.sex,
-            data.is_smoking,
-            data.cigsPerDay,
-            data.BPMeds,
-            data.prevalentStroke,
-            data.prevalentHyp,
-            data.diabetes,
-            data.totChol,
-            data.sysBP,
-            data.diaBP,
-            data.bmi,
-            data.heartRate,
-            data.glucose
-        ]])
+        # Konwersja danych wejściowych na DataFrame
+        data_dict = data.dict()
+        print('data_dict', data_dict)
+        input_data = pd.DataFrame([data_dict])
+
+        # Skalowanie wybranych kolumn
+        input_data[scaled_columns] = scaler.transform(input_data[scaled_columns])
+
+
+        transformed_data = input_data.values
+        prediction = model.predict_proba(transformed_data)
+        print('transformedData', transformed_data)
+
+        # Odwracanie skalowania
+        # original_data = scaler.inverse_transform(transformed_data)
+        # print('originData', original_data)
+
+
+
+        return {
+            "prediction": prediction.tolist(),
+
+        }
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Nieprawidłowy format danych: {e}")
-
-        # Przewidywanie
-    prediction = model.predict(features)
-
-    # Zwrócenie wyniku
-    return {"prediction": prediction.tolist()}
-
