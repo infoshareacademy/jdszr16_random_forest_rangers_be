@@ -8,9 +8,12 @@ from typing import Union
 from fastapi import FastAPI, Request, Depends, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from api_calls.get_illness_info import get_illness_info
+from api_calls.get_illness_all_data import get_illness_all_data
 from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
 from dotenv import load_dotenv
-from  models.models import InputData, Choroba
+from  models.models import InputData, Choroba, RequestData
+
+
 # import eli5
 # from eli5.sklearn import PermutationImportance
 
@@ -63,7 +66,9 @@ def illness_info(is_doctor: bool, length: int, disease: str, value: str):
 #     return get_illness_treatment_plan(disease)
 
 @app.post('/predict')
-def predict(data: InputData):
+def predict(req_data: RequestData):
+    data = req_data.formValues
+    is_doctor = req_data.isDoctor
 
     try:
         input_vector = np.array([
@@ -93,7 +98,8 @@ def predict(data: InputData):
 
         return {
             "prediction": int(prediction),
-            "probability": float(probability)
+            "probability": float(probability),
+            "illnessInfo": get_illness_all_data(is_doctor = is_doctor, probability_value = probability, input_values = data)
         }
 
 

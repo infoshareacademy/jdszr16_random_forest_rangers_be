@@ -25,7 +25,7 @@ def get_illness_info(is_doctor=False, length=10, disease="cukrzyca", value=""):
     if is_doctor:
         user_content = (
             f"Napisz tekst o {disease}. Zmiesc się w {length} zdaniach. "
-            f"Sprawdź, czy wartość {value} mieści się w przyjętym zakresie i koniecznie to oceń. "
+            f"Sprawdź, czy wartość {value} mieści się w przyjętym zakresie i koniecznie to oceń. Jesli wartosci sie nie mieszcze to podawaj wartosci normy i zaproponuj medykamenty"
             f"Podaj nazwę leku po łacinie oraz sposób leczenia. "
             f"Zalec dodatkowe badania diagnostyczne. Pisz w trzeciej osobie liczby pojedynczej jako o pacjencie. "
             f"W pewnych przypdkach {value} moze byc Tak lub Nie. Oznacza to ze pacjent moze miec {disease} lub nie."
