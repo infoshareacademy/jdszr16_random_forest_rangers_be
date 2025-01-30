@@ -1,19 +1,19 @@
-from typing import Union
-
-from fastapi import FastAPI, Request, Depends, Body, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from api_calls.get_illness_info import get_illness_info
-from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
-from dotenv import load_dotenv
-# import eli5
-# from eli5.sklearn import PermutationImportance
-
 import os
 import pickle
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+
+from typing import Union
+from fastapi import FastAPI, Request, Depends, Body, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from api_calls.get_illness_info import get_illness_info
+from api_calls.get_illness_treatment_plan import get_illness_treatment_plan
+from dotenv import load_dotenv
+from  models.models import InputData, Choroba
+# import eli5
+# from eli5.sklearn import PermutationImportance
+
 
 # min_max_scaler = MinMaxScaler()
 
@@ -27,13 +27,10 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 # Lista kolumn w kolejności, jakiej oczekuje model
-FEATURE_COLUMNS = [
-    'sex', 'age', 'education', 'cigsPerDay', 'BPMeds', 'prevalentStroke',
-    'prevalentHyp', 'diabetes', 'totChol', 'sysBP', 'diaBP', 'BMI', 'glucose'
-]
 
 
-with open('./models/calibrated_pipeline.pkl', 'rb') as file:
+
+with open('./ml_models/calibrated_pipeline.pkl', 'rb') as file:
     model = pickle.load(file)
 
 
@@ -52,43 +49,23 @@ app.add_middleware(
 )
 
 # Model danych
-class Choroba(BaseModel):
-    choroba_name: str
-
-
-class InputData(BaseModel):
-    sex: int
-    age: int
-    education: int
-    cigsPerDay: int
-    BPMeds: int
-    prevalentStroke: int
-    prevalentHyp: int
-    diabetes: int
-    totChol: float
-    sysBP: float
-    diaBP: float
-    BMI: float
-    glucose: int
-
 
 @app.get('/')
 def test():
     return {"message": "Odpowiedz z Backend"}
 
 @app.get('/illness_more_info')
-def illness_info(is_doctor: bool, length: int, disease: str):
-    return get_illness_info(is_doctor, length, disease)
+def illness_info(is_doctor: bool, length: int, disease: str, value: str):
+    return get_illness_info(is_doctor, length, disease, value)
 
-@app.get('/illness_treatment_plan')
-def illness_treatment_plan(disease: str):
-    return get_illness_treatment_plan(disease)
+# @app.get('/illness_treatment_plan')
+# def illness_treatment_plan(disease: str):
+#     return get_illness_treatment_plan(disease)
 
 @app.post('/predict')
 def predict(data: InputData):
 
     try:
-
         input_vector = np.array([
             int(data.sex),
             data.age,
@@ -103,12 +80,14 @@ def predict(data: InputData):
             data.diaBP,
             data.BMI,
             data.glucose,
-        ]).reshape(1, -1)  # Konwersja do formatu (1, n_features)
+        ]).reshape(1, -1)
 
-
+        FEATURE_COLUMNS = [
+            'sex', 'age', 'education', 'cigsPerDay', 'BPMeds', 'prevalentStroke',
+            'prevalentHyp', 'diabetes', 'totChol', 'sysBP', 'diaBP', 'BMI', 'glucose'
+        ]
         input_df = pd.DataFrame([data.dict()], columns=FEATURE_COLUMNS)
 
-        # Model wykonuje preprocessing wewnętrznie
         prediction = model.predict(input_df)[0]
         probability = model.predict_proba(input_df)[0][1]  # Prawdopodobieństwo klasy pozytywnej
 

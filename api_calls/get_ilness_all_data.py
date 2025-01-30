@@ -4,7 +4,7 @@ import os
 api_key = os.getenv("OPENAI_API_KEY")
 api_org = os.getenv("OPENAI_API_ORG")
 
-def get_illness_info(is_doctor=False, length=10, disease="cukrzyca", value=""):
+def get_illness_all_data(is_doctor=False, length=10, disease="cukrzyca", value=""):
     openai.api_key = api_key
 
     if is_doctor:
