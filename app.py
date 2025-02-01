@@ -33,7 +33,7 @@ from  models.models import InputData, Choroba, RequestData
 
 
 
-with open('./ml_models/calibrated_pipeline.pkl', 'rb') as file:
+with open('ml_models/calibrated_pipeline.pkl', 'rb') as file:
     model = pickle.load(file)
 
 
