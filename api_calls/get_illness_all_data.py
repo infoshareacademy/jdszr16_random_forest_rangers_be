@@ -43,14 +43,15 @@ def get_illness_all_data(is_doctor=False, probability_value  = "", input_values 
             f"Zawsze pisz w 3 osobie. Zrob opis stanu zdrowia pacjenta na podstawie tych informacji: {patient_summary}. Jesli jakis wynik nie jest w normie zawsze podawaj zakresy normy"
             f"Unikaj trudnych terminów, podaj proste zalecenia dotyczące zdrowia i stylu życia. W opisie odwoluj sie do wyslanych wartosci"
             f"Jesli zobaczysz ze pewne parametry sa powyzej normy podawaj zalecenia na dalsze badania. Badzi szczegolowy. Zaproponuj jak sie leczyc i odrzywiac "
+            f"W woich odpowiedziach nie uzywaj gwiazdek. Nie zostawiaj duzych przerw miedzy wierszami. Najwyzej jedna linijka przerwy"
         )
     else:
         user_content = (
-            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, Twoje ryzyko zachorowania na choroby serca w ciągu nastepnych lat wynosi {probability_value_txt}. Rob pozniej jedna linijke przerwy.  "
+            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, Twoje ryzyko zachorowania na choroby serca w ciągu nastepnych siesieciu lat wynosi {probability_value_txt}. Rob pozniej jedna linijke przerwy.  "
             f"Zrob opis stanu zdrowia pacjenta na podstawie tych informacji: {patient_summary}. Jesli jakis wynik nie jest w normie zawsze podawaj zakresy normy"
             f"Unikaj trudnych terminów, podaj proste zalecenia dotyczące zdrowia i stylu życia. W opisie odwoluj sie do wyslanych wartosci"
             f"Jesli zobaczysz ze pewne parametry sa powyzej normy to zalecaj wizyte u lekarza. Zaproponuj jak sie leczyc i odrzywiac "
-
+            f"W woich odpowiedziach nie uzywaj gwiazdek. Nie zostawiaj duzych przerw miedzy wierszami. Najwyzej jedna linijka przerwy"
 
         )
 
