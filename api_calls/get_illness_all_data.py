@@ -18,7 +18,7 @@ def get_illness_all_data(is_doctor=False, probability_value  = "", input_values 
 
     # Tworzenie czytelnego opisu pacjenta na podstawie przetworzonych danych
     patient_summary = ", ".join([f"{key}: {value}" for key, value in translated_data.items()])
-    probability_value = round(probability_value * 100, 2).astype(str) + " %"
+    probability_value_txt = round(probability_value * 100, 2).astype(str) + " %"
 
 
     if is_doctor:
@@ -26,7 +26,8 @@ def get_illness_all_data(is_doctor=False, probability_value  = "", input_values 
             "Jesteś lekarzem, profesorem medycyny i farmaceutą. "
             "Znasz nazwy leków po łacinie i używasz skomplikowanego języka medycznego. "
             "W tekstach stosujesz terminologię fachową, opisujesz choroby po łacinie "
-            "i koncentrujesz się na szczegółowych metodach leczenia i diagnostyki."
+            "i koncentrujesz się na szczegółowych metodach leczenia i diagnostyki. "
+            f"Jesli {probability_value} jest wieksze od 0.5 badz bardzo surowy w ocenie pacjenta. "
         )
     else:
         taskContent = (
@@ -38,14 +39,14 @@ def get_illness_all_data(is_doctor=False, probability_value  = "", input_values 
 
     if is_doctor:
         user_content = (
-            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, ryzyko zachorowania pacjenta na choroby serca to {probability_value}. Rob pozniej jedna linijke przerwy.  "
+            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, ryzyko zachorowania pacjenta na choroby serca w ciągu nastepnych dziesięciu lat wynosi {probability_value_txt}. Rob pozniej jedna linijke przerwy.  "
             f"Zawsze pisz w 3 osobie. Zrob opis stanu zdrowia pacjenta na podstawie tych informacji: {patient_summary}. Jesli jakis wynik nie jest w normie zawsze podawaj zakresy normy"
             f"Unikaj trudnych terminów, podaj proste zalecenia dotyczące zdrowia i stylu życia. W opisie odwoluj sie do wyslanych wartosci"
             f"Jesli zobaczysz ze pewne parametry sa powyzej normy podawaj zalecenia na dalsze badania. Badzi szczegolowy. Zaproponuj jak sie leczyc i odrzywiac "
         )
     else:
         user_content = (
-            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, Twoje ryzyko zachorowania na choroby serca to {probability_value}. Rob pozniej jedna linijke przerwy.  "
+            f"Zawsze zaczynaj zdaniem: Na podstawie podanych informacji, Twoje ryzyko zachorowania na choroby serca w ciągu nastepnych lat wynosi {probability_value_txt}. Rob pozniej jedna linijke przerwy.  "
             f"Zrob opis stanu zdrowia pacjenta na podstawie tych informacji: {patient_summary}. Jesli jakis wynik nie jest w normie zawsze podawaj zakresy normy"
             f"Unikaj trudnych terminów, podaj proste zalecenia dotyczące zdrowia i stylu życia. W opisie odwoluj sie do wyslanych wartosci"
             f"Jesli zobaczysz ze pewne parametry sa powyzej normy to zalecaj wizyte u lekarza. Zaproponuj jak sie leczyc i odrzywiac "
